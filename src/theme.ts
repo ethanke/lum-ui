@@ -224,12 +224,12 @@ function hexToRgba(hex: string, alpha: number): string {
 }
 
 // Pre-computed default values for convenience
-const defaultThemeInstance = createTheme();
-export const cssVariables = defaultThemeInstance.cssVariables;
-export const tailwindConfig = defaultThemeInstance.tailwindConfig;
+const defaultThemeInstance: Theme = createTheme();
+export const cssVariables: string = defaultThemeInstance.cssVariables;
+export const tailwindConfig: string = defaultThemeInstance.tailwindConfig;
 
 // Gradient presets using CSS variables
-export const gradients = {
+export const gradients: Record<string, string> = {
   brand: "from-[var(--brand-accent)] via-[var(--brand-primary)] to-[var(--brand-secondary)]",
   brandSubtle:
     "from-[var(--brand-accent)]/10 via-[var(--brand-primary)]/10 to-[var(--brand-secondary)]/10",
@@ -239,13 +239,13 @@ export const gradients = {
 };
 
 // Glass morphism utility
-export const glass = {
+export const glass: Record<string, string> = {
   base: "bg-[var(--surface-1)]/70 backdrop-blur-xl border border-[var(--border-default)]",
   hover: "hover:border-[var(--border-hover)] hover:shadow-[var(--shadow-glow)]",
 };
 
 // Common effect classes
-export const effects = {
+export const effects: Record<string, string> = {
   glow: "shadow-[var(--shadow-glow)]",
   glowStrong: "shadow-[var(--shadow-glow-strong)]",
   gradientText: "bg-[var(--gradient-brand)] bg-clip-text text-transparent",
