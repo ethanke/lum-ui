@@ -266,7 +266,7 @@ ${comp.description}
     if (comp.screenshot) {
       md += `### Preview
 
-![${comp.name}](../screenshots/${comp.screenshot})
+![${comp.name}](https://raw.githubusercontent.com/ethanke/lum-ui/main/screenshots/${comp.screenshot})
 
 `;
     }
@@ -321,7 +321,7 @@ ${chart.description}
     if (chart.screenshot) {
       md += `### Preview
 
-![${chart.name}](../screenshots/${chart.screenshot})
+![${chart.name}](https://raw.githubusercontent.com/ethanke/lum-ui/main/screenshots/${chart.screenshot})
 
 `;
     }

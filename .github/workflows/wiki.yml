@@ -47,6 +47,16 @@ jobs:
         run: |
           echo "📸 Generating component screenshots..."
           deno run --allow-read --allow-write --allow-net --allow-env --allow-run scripts/generate-screenshots.ts || echo "Screenshot generation skipped (optional)"
+          
+      - name: Commit screenshots to main repo
+        run: |
+          if [ -d "screenshots" ] && [ -n "$(ls -A screenshots/*.png 2>/dev/null)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add screenshots/*.png
+            git commit -m "chore: Update component screenshots [skip ci]" || echo "No screenshot changes"
+            git push || echo "No changes to push"
+          fi
 
       - name: Generate wiki pages
         run: |
