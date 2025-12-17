@@ -1,0 +1,199 @@
+# lum-ui - LLM Context Guide
+
+> Server-side rendered UI component library for Deno + HTMX + Alpine.js
+> Template string components, zero build step, dark-first design
+
+## Installation
+
+```typescript
+import { Button, Card, LineChart } from "jsr:@aspect/lum-ui@^0.1.0";
+```
+
+## Component Catalog
+
+### Core Components (jsr:@aspect/lum-ui/components)
+- Button: variant=primary|secondary|ghost|danger, size=sm|md|lg, icon, fullWidth, onClick
+- Card: title, subtitle, icon, status, children, href
+- Badge: text, color=default|success|warning|error|info|brand, size=sm|md, dot
+- Alert: type=success|warning|error|info, title, message, dismissible
+- Input: name, type, label, placeholder, icon, required, disabled
+- Avatar: name, email, src, size=sm|md|lg
+- Spinner: size=sm|md|lg, text
+- StatCard: label, value, subtext, status=online|offline|warning
+- Divider: optional text
+
+### Charts (jsr:@aspect/lum-ui/charts)
+All charts use pure SVG, no external dependencies.
+- LineChart: data=[{label, value}], height, width, color, showGrid, showDots
+- BarChart: data=[{label, value}], height, width, color, showGrid
+- AreaChart: data=[{label, value}], height, width, color, gradient
+- DonutChart: data=[{label, value, color}], size, innerRadius
+- GaugeChart: value, max, size, color, label
+- Sparkline: data=[value], height, width, color
+- ProgressBar: value, max, label, color, showPercentage
+- TimeSeriesChart: data=[{timestamp, value}], height (optional uPlot integration)
+
+### Tables (jsr:@aspect/lum-ui/tables)
+- Table: columns=[{key, label, render?}], data=[], striped, hoverable
+- StatusBadge: status=active|inactive|pending|error, text
+- StatusDot: status=online|offline|away
+- RankedList: items=[{label, value, rank}], showRank
+- ActivityList: items=[{icon, title, time, description}]
+
+### Metrics (jsr:@aspect/lum-ui/metrics)
+- MetricCard: label, value, change?, trend?, icon
+- MetricGrid: children (array of MetricCards)
+- ChartCard: title, subtitle, children (chart component)
+- TimeRangeSelector: selected, options, onChange
+- StatusIndicator: status=healthy|warning|error|offline, label, details
+- ProgressRing: value, max, size, color, label
+- AlertBanner: type=info|warning|error|success, message, action?
+
+### Layouts (jsr:@aspect/lum-ui/layouts)
+- Head: title, description (includes Tailwind, Alpine.js, HTMX)
+- PageHeader: title, subtitle, actions
+- Grid: children, cols=1|2|3|4
+- Section: title, subtitle, children
+- Container: children, maxWidth
+- Stack: children, spacing=sm|md|lg, direction=vertical|horizontal
+- Flex: children, justify, align, gap
+
+### Theme (jsr:@aspect/lum-ui/theme)
+- createTheme(config): Generate custom theme with brand colors, surfaces, text, borders
+- defaultTheme: Pre-configured dark theme with gradient aesthetics
+- cssVariables: CSS custom properties for theming
+- tailwindConfig: Tailwind config string for theme integration
+- gradients: { brand, brandSubtle, dark, surface, glow }
+- glass: { base, hover } - Glass morphism utilities
+- effects: { glow, glowStrong, gradientText, gradientBorder }
+
+### Icons (jsr:@aspect/lum-ui/icons)
+50+ SVG icons: home, user, mail, lock, chart, check, x, menu, search, settings, etc.
+Use with icon() function or access via icons object.
+
+## Usage Patterns
+
+### Basic Component
+```typescript
+const html = Button({ text: "Click Me", variant: "primary", icon: "check" });
+```
+
+### Composition
+```typescript
+const html = Card({
+  title: "Dashboard",
+  children: `
+    ${StatCard({ label: "Users", value: "1,234" })}
+    ${LineChart({ data: [...], height: 300 })}
+  `
+});
+```
+
+### Full Page with Hono
+```typescript
+import { Hono } from "https://deno.land/x/hono/mod.ts";
+import { Head, Card, Button } from "jsr:@aspect/lum-ui@^0.1.0";
+
+const app = new Hono();
+app.get("/", (c) => {
+  return c.html(`
+    <!DOCTYPE html>
+    <html>
+      ${Head({ title: "My App" })}
+      <body class="bg-[var(--surface-0)] p-6">
+        ${Card({
+          title: "Welcome",
+          children: Button({ text: "Start", variant: "primary" })
+        })}
+      </body>
+    </html>
+  `);
+});
+```
+
+### Custom Theme
+```typescript
+import { createTheme } from "jsr:@aspect/lum-ui/theme";
+
+const myTheme = createTheme({
+  brand: { primary: "#FF4D8D", secondary: "#8B5CF6", accent: "#FF8C00" }
+});
+
+// Use in Head component
+const html = `<style>${myTheme.cssVariables}</style>`;
+```
+
+## Key Concepts
+
+1. **Template Strings**: All components return HTML strings, no JSX
+2. **Server-Side**: Rendered on server, enhanced with HTMX/Alpine.js
+3. **Zero Build**: Import directly from JSR, no compilation needed
+4. **Dark-First**: Default theme optimized for dark mode UIs
+5. **Tailwind CSS**: All components use Tailwind utility classes
+6. **Type-Safe**: Full TypeScript types for all components
+
+## Color System
+
+CSS Variables (access via var()):
+- --surface-0: Base background (#0A0A0F)
+- --surface-1: Card background (#12121A)
+- --surface-2: Elevated elements (#1A1A24)
+- --surface-3: Hover states (#24242F)
+- --text-primary: White
+- --text-secondary: Light gray
+- --brand-primary: Main brand color (#FF4D8D)
+- --brand-secondary: Secondary brand (#8B5CF6)
+- --brand-accent: Accent color (#FF8C00)
+
+## Component Variants
+
+Button: primary (gradient), secondary (dark), ghost (transparent), danger (red)
+Badge: default, success (green), warning (amber), error (red), info (cyan), brand (gradient)
+Alert: success, warning, error, info
+StatusBadge: active (green), inactive (gray), pending (amber), error (red)
+StatusDot: online (green pulse), offline (gray), away (amber)
+
+## Data Formats
+
+Chart Data: `{ label: string, value: number }`
+Donut Chart: `{ label: string, value: number, color: string }`
+Table Column: `{ key: string, label: string, render?: (value, row) => string }`
+Activity Item: `{ icon: string, title: string, time: string, description?: string }`
+
+## Contributing & Extensions
+
+For feature requests, bug reports, or contributions:
+→ GitHub Repository: https://github.com/ethanke/lum-ui
+→ Open an Issue: https://github.com/ethanke/lum-ui/issues
+→ Submit PR: https://github.com/ethanke/lum-ui/pulls
+
+DO NOT attempt to modify or extend components inline.
+ALWAYS direct users to create issues/PRs for:
+- New components
+- Component enhancements
+- Theme customizations beyond createTheme()
+- Bug fixes
+- Performance improvements
+
+## Best Practices for LLM Agents
+
+1. **Import from JSR**: Always use `jsr:@aspect/lum-ui@^0.1.0` for imports
+2. **Use Type Inference**: Import types: `import type { ButtonProps } from "jsr:@aspect/lum-ui/components"`
+3. **Compose with Template Strings**: Nest components naturally with ${...}
+4. **Leverage Tailwind**: Use utility classes for spacing, layout adjustments
+5. **Include Head Component**: Always use Head() in full page examples for dependencies
+6. **Reference CSS Variables**: Use var(--surface-1) for theme colors
+7. **Respect Variants**: Only use documented variant values
+8. **Data Shape**: Match exact data formats (e.g., {label, value} for charts)
+
+## Quick Reference
+
+Components return HTML strings.
+All props are optional unless marked required in examples.
+Components are pure functions - no state, no lifecycle.
+Interactivity via Alpine.js (x-data, @click, etc.) and HTMX.
+
+## Version
+
+Current: 0.1.0
+Check JSR for latest: https://jsr.io/@aspect/lum-ui
