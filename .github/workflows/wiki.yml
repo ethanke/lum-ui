@@ -36,43 +36,6 @@ jobs:
         with:
           deno-version: v1.x
 
-      - name: Install Chrome for screenshots
-        run: |
-          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
-          rm google-chrome-stable_current_amd64.deb
-
-      - name: Generate component screenshots
-        env:
-          PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
-        run: |
-          echo "📸 Generating component screenshots..."
-          mkdir -p screenshots
-          deno run --allow-all scripts/generate-screenshots.ts || echo "⚠️  Screenshot generation failed, continuing..."
-          
-      - name: Upload screenshots as artifact
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: component-screenshots
-          path: screenshots/*.png
-          retention-days: 90
-          
-      - name: Commit screenshots to main repo
-        if: success()
-        run: |
-          if [ -d "screenshots" ] && [ -n "$(ls -A screenshots/*.png 2>/dev/null)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add screenshots/*.png
-            if git diff --staged --quiet; then
-              echo "No screenshot changes to commit"
-            else
-              git commit -m "chore: Update component screenshots [skip ci]"
-              git push
-            fi
-          fi
-
       - name: Generate wiki pages
         run: |
           echo "📝 Generating wiki documentation..."
@@ -112,7 +75,7 @@ jobs:
         run: |
           echo "## 📚 Wiki Update Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Wiki has been automatically generated and updated with visual documentation." >> $GITHUB_STEP_SUMMARY
+          echo "Wiki has been automatically generated and updated." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "🔗 [View Wiki](https://github.com/${{ github.repository }}/wiki)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -122,10 +85,5 @@ jobs:
           echo "- 📊 Charts - Data visualization components" >> $GITHUB_STEP_SUMMARY
           echo "- 🎨 Theme - Customization guide" >> $GITHUB_STEP_SUMMARY
           echo "- 💡 Examples - Real-world usage" >> $GITHUB_STEP_SUMMARY
-          
-          if [ -d "screenshots" ]; then
-            SCREENSHOT_COUNT=$(ls screenshots/*.png 2>/dev/null | wc -l)
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### Visual Documentation" >> $GITHUB_STEP_SUMMARY
-            echo "- 📸 Generated ${SCREENSHOT_COUNT} component screenshots" >> $GITHUB_STEP_SUMMARY
-          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📸 Screenshots are generated via pre-commit hook when source files change" >> $GITHUB_STEP_SUMMARY
