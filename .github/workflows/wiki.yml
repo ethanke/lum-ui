@@ -1,0 +1,78 @@
+name: Update Wiki
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'scripts/generate-wiki.ts'
+      - 'README.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-wiki:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout wiki
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}.wiki
+          path: wiki-repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Generate wiki pages
+        run: |
+          deno run --allow-read --allow-write scripts/generate-wiki.ts
+
+      - name: Copy wiki pages to wiki repository
+        run: |
+          cp -r wiki/* wiki-repo/
+          cd wiki-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push wiki changes
+        working-directory: wiki-repo
+        run: |
+          git add .
+          if git diff --staged --quiet; then
+            echo "No changes to wiki"
+          else
+            git commit -m "📚 Auto-update wiki from source code
+
+            Generated from commit: ${{ github.sha }}
+            Workflow: ${{ github.workflow }}
+            Run: ${{ github.run_number }}"
+            git push
+            echo "✅ Wiki updated successfully"
+          fi
+
+      - name: Summary
+        run: |
+          echo "## 📚 Wiki Update Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Wiki has been automatically generated and updated." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 [View Wiki](https://github.com/${{ github.repository }}/wiki)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Generated Pages" >> $GITHUB_STEP_SUMMARY
+          echo "- Home" >> $GITHUB_STEP_SUMMARY
+          echo "- Components" >> $GITHUB_STEP_SUMMARY
+          echo "- Charts" >> $GITHUB_STEP_SUMMARY
+          echo "- Theme" >> $GITHUB_STEP_SUMMARY
+          echo "- Examples" >> $GITHUB_STEP_SUMMARY

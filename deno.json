@@ -37,12 +37,15 @@
   },
   "lint": {
     "rules": {
-      "tags": ["recommended"]
+      "tags": [
+        "recommended"
+      ]
     }
   },
   "tasks": {
     "check": "deno fmt --check && deno lint && deno check mod.ts",
     "test": "deno test --allow-read",
-    "publish": "deno publish"
+    "publish": "deno publish",
+    "gen:wiki": "deno run --allow-read --allow-write scripts/generate-wiki.ts"
   }
 }

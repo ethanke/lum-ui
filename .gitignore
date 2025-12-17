@@ -1,20 +1,4 @@
-# Dependencies
+wiki/
 node_modules/
-
-# Build output
-dist/
-.deno/
-
-# IDE
-.vscode/
-.idea/
-
-# OS
 .DS_Store
-Thumbs.db
-
-# Logs
 *.log
-
-# Coverage
-coverage/
