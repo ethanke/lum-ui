@@ -46,6 +46,7 @@
     "check": "deno fmt --check && deno lint && deno check mod.ts",
     "test": "deno test --allow-read",
     "publish": "deno publish",
-    "gen:wiki": "deno run --allow-read --allow-write scripts/generate-wiki.ts"
+    "gen:wiki": "deno run --allow-read --allow-write scripts/generate-wiki.ts",
+    "init:wiki": "./scripts/init-wiki.sh"
   }
 }

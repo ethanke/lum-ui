@@ -7,6 +7,7 @@ on:
     paths:
       - 'src/**'
       - 'scripts/generate-wiki.ts'
+      - 'scripts/generate-screenshots.ts'
       - 'README.md'
   workflow_dispatch:
 
@@ -35,13 +36,35 @@ jobs:
         with:
           deno-version: v1.x
 
+      - name: Install Chrome for screenshots
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+          export PUPPETEER_PRODUCT=chrome
+          export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+      - name: Generate component screenshots
+        run: |
+          echo "📸 Generating component screenshots..."
+          deno run --allow-read --allow-write --allow-net --allow-env --allow-run scripts/generate-screenshots.ts || echo "Screenshot generation skipped (optional)"
+
       - name: Generate wiki pages
         run: |
+          echo "📝 Generating wiki documentation..."
           deno run --allow-read --allow-write scripts/generate-wiki.ts
 
       - name: Copy wiki pages to wiki repository
         run: |
-          cp -r wiki/* wiki-repo/
+          echo "📦 Copying generated content..."
+          cp -r wiki/* wiki-repo/ 2>/dev/null || mkdir -p wiki-repo
+          cp wiki/*.md wiki-repo/
+          
+          # Copy screenshots if they exist
+          if [ -d "screenshots" ]; then
+            mkdir -p wiki-repo/screenshots
+            cp screenshots/*.png wiki-repo/screenshots/ 2>/dev/null || echo "No screenshots to copy"
+          fi
+          
           cd wiki-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -51,13 +74,17 @@ jobs:
         run: |
           git add .
           if git diff --staged --quiet; then
-            echo "No changes to wiki"
+            echo "📭 No changes to wiki"
           else
             git commit -m "📚 Auto-update wiki from source code
 
             Generated from commit: ${{ github.sha }}
             Workflow: ${{ github.workflow }}
-            Run: ${{ github.run_number }}"
+            Run: ${{ github.run_number }}
+            
+            - Updated documentation pages
+            - Refreshed component screenshots
+            - Synced with latest source code"
             git push
             echo "✅ Wiki updated successfully"
           fi
@@ -66,13 +93,20 @@ jobs:
         run: |
           echo "## 📚 Wiki Update Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Wiki has been automatically generated and updated." >> $GITHUB_STEP_SUMMARY
+          echo "Wiki has been automatically generated and updated with visual documentation." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "🔗 [View Wiki](https://github.com/${{ github.repository }}/wiki)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Generated Pages" >> $GITHUB_STEP_SUMMARY
-          echo "- Home" >> $GITHUB_STEP_SUMMARY
-          echo "- Components" >> $GITHUB_STEP_SUMMARY
-          echo "- Charts" >> $GITHUB_STEP_SUMMARY
-          echo "- Theme" >> $GITHUB_STEP_SUMMARY
-          echo "- Examples" >> $GITHUB_STEP_SUMMARY
+          echo "- 📖 Home - Overview and quick start" >> $GITHUB_STEP_SUMMARY
+          echo "- 🎨 Components - UI elements with screenshots" >> $GITHUB_STEP_SUMMARY
+          echo "- 📊 Charts - Data visualization components" >> $GITHUB_STEP_SUMMARY
+          echo "- 🎨 Theme - Customization guide" >> $GITHUB_STEP_SUMMARY
+          echo "- 💡 Examples - Real-world usage" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -d "screenshots" ]; then
+            SCREENSHOT_COUNT=$(ls screenshots/*.png 2>/dev/null | wc -l)
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Visual Documentation" >> $GITHUB_STEP_SUMMARY
+            echo "- 📸 Generated ${SCREENSHOT_COUNT} component screenshots" >> $GITHUB_STEP_SUMMARY
+          fi

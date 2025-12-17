@@ -3,6 +3,7 @@
 /**
  * Auto-generates GitHub Wiki documentation from source code
  * Parses TypeScript files to extract components, types, and examples
+ * Includes component screenshots for visual reference
  */
 
 interface Component {
@@ -11,6 +12,7 @@ interface Component {
   props: Array<{ name: string; type: string; required: boolean; description?: string }>;
   example: string;
   category: "component" | "chart" | "table" | "metric" | "layout";
+  screenshot?: string;
 }
 
 const CATEGORIES = {
@@ -19,6 +21,25 @@ const CATEGORIES = {
   table: ["Table", "StatusBadge", "StatusDot", "RankedList", "ActivityList"],
   metric: ["MetricCard", "MetricGrid", "ChartCard", "TimeRangeSelector", "StatusIndicator", "ProgressRing", "AlertBanner"],
   layout: ["Head", "PageHeader", "Grid", "Section", "Container", "Stack", "Flex"],
+};
+
+// Map component names to their screenshot files
+const SCREENSHOT_MAP: Record<string, string> = {
+  "Button": "Button-Primary.png",
+  "Card": "Card.png",
+  "Badge": "Badge-Success.png",
+  "Alert": "Alert-Success.png",
+  "Input": "Input.png",
+  "Avatar": "Avatar.png",
+  "Spinner": "Spinner.png",
+  "StatCard": "StatCard.png",
+  "LineChart": "LineChart.png",
+  "BarChart": "BarChart.png",
+  "DonutChart": "DonutChart.png",
+  "ProgressBar": "ProgressBar.png",
+  "GaugeChart": "GaugeChart.png",
+  "StatusBadge": "StatusBadge-Active.png",
+  "StatusDot": "StatusDot.png",
 };
 
 async function parseComponents(): Promise<Component[]> {
@@ -46,6 +67,7 @@ async function parseComponents(): Promise<Component[]> {
           props: propsMatch ? parseProps(propsMatch[1]) : [],
           example: generateExample(compName, category),
           category,
+          screenshot: SCREENSHOT_MAP[compName],
         });
       }
     }
@@ -238,7 +260,18 @@ ${byCategory.map((c) => `- [${c.name}](#${c.name.toLowerCase()})`).join("\n")}
 
 ${comp.description}
 
-### Props
+`;
+
+    // Add screenshot if available
+    if (comp.screenshot) {
+      md += `### Preview
+
+![${comp.name}](../screenshots/${comp.screenshot})
+
+`;
+    }
+
+    md += `### Props
 
 | Prop | Type | Required | Description |
 |------|------|----------|-------------|
@@ -282,7 +315,18 @@ ${charts.map((c) => `- [${c.name}](#${c.name.toLowerCase()})`).join("\n")}
 
 ${chart.description}
 
-### Props
+`;
+
+    // Add screenshot if available
+    if (chart.screenshot) {
+      md += `### Preview
+
+![${chart.name}](../screenshots/${chart.screenshot})
+
+`;
+    }
+
+    md += `### Props
 
 | Prop | Type | Required |
 |------|------|----------|
