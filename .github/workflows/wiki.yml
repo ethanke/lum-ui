@@ -38,24 +38,39 @@ jobs:
 
       - name: Install Chrome for screenshots
         run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser
-          export PUPPETEER_PRODUCT=chrome
-          export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
+          rm google-chrome-stable_current_amd64.deb
 
       - name: Generate component screenshots
+        env:
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
         run: |
           echo "📸 Generating component screenshots..."
-          deno run --allow-read --allow-write --allow-net --allow-env --allow-run scripts/generate-screenshots.ts || echo "Screenshot generation skipped (optional)"
+          mkdir -p screenshots
+          deno run --allow-all scripts/generate-screenshots.ts || echo "⚠️  Screenshot generation failed, continuing..."
+          
+      - name: Upload screenshots as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: component-screenshots
+          path: screenshots/*.png
+          retention-days: 90
           
       - name: Commit screenshots to main repo
+        if: success()
         run: |
           if [ -d "screenshots" ] && [ -n "$(ls -A screenshots/*.png 2>/dev/null)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add screenshots/*.png
-            git commit -m "chore: Update component screenshots [skip ci]" || echo "No screenshot changes"
-            git push || echo "No changes to push"
+            if git diff --staged --quiet; then
+              echo "No screenshot changes to commit"
+            else
+              git commit -m "chore: Update component screenshots [skip ci]"
+              git push
+            fi
           fi
 
       - name: Generate wiki pages
@@ -66,14 +81,8 @@ jobs:
       - name: Copy wiki pages to wiki repository
         run: |
           echo "📦 Copying generated content..."
-          cp -r wiki/* wiki-repo/ 2>/dev/null || mkdir -p wiki-repo
-          cp wiki/*.md wiki-repo/
-          
-          # Copy screenshots if they exist
-          if [ -d "screenshots" ]; then
-            mkdir -p wiki-repo/screenshots
-            cp screenshots/*.png wiki-repo/screenshots/ 2>/dev/null || echo "No screenshots to copy"
-          fi
+          mkdir -p wiki-repo
+          cp wiki/*.md wiki-repo/ 2>/dev/null || echo "No wiki pages found"
           
           cd wiki-repo
           git config user.name "github-actions[bot]"
