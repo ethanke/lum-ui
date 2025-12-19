@@ -41,7 +41,7 @@ ${Head({
         Pure TypeScript. Perfect for building fast, modern web applications.
       </p>
       <div class="flex justify-center gap-4 flex-wrap">
-        ${Button({ text: "View Showcase", href: "./showcase.html", variant: "primary", icon: "chart" })}
+        ${Button({ text: "View Showcase", href: "/showcase.html", variant: "primary", icon: "chart" })}
         ${Button({ text: "Install from JSR", href: "https://jsr.io/@ethanke/lum-ui", variant: "secondary", icon: "externalLink" })}
         ${Button({ text: "GitHub", href: "https://github.com/ethanke/lum-ui", variant: "ghost", icon: "github" })}
       </div>
@@ -100,7 +100,7 @@ const html = Card({
       <div class="flex justify-center gap-6 flex-wrap">
         <a href="https://jsr.io/@ethanke/lum-ui" class="text-[#FF4D8D] hover:underline">JSR Package</a>
         <a href="https://github.com/ethanke/lum-ui" class="text-[#FF4D8D] hover:underline">GitHub Repository</a>
-        <a href="./showcase.html" class="text-[#FF4D8D] hover:underline">Component Showcase</a>
+        <a href="/showcase.html" class="text-[#FF4D8D] hover:underline">Component Showcase</a>
         <a href="https://github.com/ethanke/lum-ui/wiki" class="text-[#FF4D8D] hover:underline">Documentation</a>
       </div>
       <p class="text-zinc-500 text-sm">

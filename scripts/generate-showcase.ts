@@ -37,7 +37,7 @@ ${Head({ title: "lum-ui Component Showcase", description: "Visual showcase of al
         Every component shown here is generated server-side using template strings.
       </p>
       <div class="flex justify-center gap-4 mt-6">
-        ${Button({ text: "← Back to Home", href: "./index.html", variant: "ghost" })}
+        ${Button({ text: "← Back to Home", href: "/", variant: "ghost" })}
         ${Button({ text: "View on JSR", href: "https://jsr.io/@ethanke/lum-ui", variant: "primary", icon: "externalLink" })}
         ${Button({ text: "GitHub", href: "https://github.com/ethanke/lum-ui", variant: "secondary", icon: "github" })}
       </div>
