@@ -3,7 +3,7 @@
  * Component Showcase Generator
  * 
  * Generates a showcase page with rendered component examples
- * This creates a static HTML page that can be hosted alongside the wiki
+ * This creates a static HTML page for GitHub Pages deployment
  */
 
 // Import components from local source
