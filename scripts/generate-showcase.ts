@@ -10,7 +10,7 @@
 import { Button, Card, Badge, Alert, Avatar, Spinner, Input, StatCard } from "../src/components.ts";
 import { LineChart, BarChart, DonutChart, ProgressBar, Sparkline, GaugeChart } from "../src/charts.ts";
 import { Table, StatusBadge, StatusDot, ActivityList } from "../src/tables.ts";
-import { MetricCard, ChartCard, StatusIndicator, ProgressRing, AlertBanner } from "../src/metrics.ts";
+import { MetricCard, ChartCard, StatusIndicator, ProgressRing, AlertBanner, MetricGrid } from "../src/metrics.ts";
 import { Head, PageHeader, Grid, Section, Container, Stack } from "../src/layouts.ts";
 import { cssVariables, tailwindConfig, gradients, glass, effects } from "../src/theme.ts";
 import { icons, icon } from "../src/icons.ts";
