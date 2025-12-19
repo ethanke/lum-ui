@@ -105,8 +105,8 @@ deno task check
 # Run tests
 deno task test
 
-# Generate wiki documentation
-deno task gen:wiki
+# Generate showcase
+deno task gen:showcase
 
 # Publish to JSR
 deno task publish
@@ -120,6 +120,3 @@ MIT © [Aspect](https://github.com/ethanke/lum-ui)
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
----
-
-**Note**: The wiki is automatically generated from source code on every push to main. Component documentation stays in sync with the codebase automatically.
