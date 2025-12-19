@@ -6,12 +6,12 @@
 ## Installation
 
 ```typescript
-import { Button, Card, LineChart } from "jsr:@aspect/lum-ui@^0.1.0";
+import { Button, Card, LineChart } from "jsr:@ethanke/lum-ui@^0.1.0";
 ```
 
 ## Component Catalog
 
-### Core Components (jsr:@aspect/lum-ui/components)
+### Core Components (jsr:@ethanke/lum-ui/components)
 - Button: variant=primary|secondary|ghost|danger, size=sm|md|lg, icon, fullWidth, onClick
 - Card: title, subtitle, icon, status, children, href
 - Badge: text, color=default|success|warning|error|info|brand, size=sm|md, dot
@@ -22,7 +22,7 @@ import { Button, Card, LineChart } from "jsr:@aspect/lum-ui@^0.1.0";
 - StatCard: label, value, subtext, status=online|offline|warning
 - Divider: optional text
 
-### Charts (jsr:@aspect/lum-ui/charts)
+### Charts (jsr:@ethanke/lum-ui/charts)
 All charts use pure SVG, no external dependencies.
 - LineChart: data=[{label, value}], height, width, color, showGrid, showDots
 - BarChart: data=[{label, value}], height, width, color, showGrid
@@ -33,14 +33,14 @@ All charts use pure SVG, no external dependencies.
 - ProgressBar: value, max, label, color, showPercentage
 - TimeSeriesChart: data=[{timestamp, value}], height (optional uPlot integration)
 
-### Tables (jsr:@aspect/lum-ui/tables)
+### Tables (jsr:@ethanke/lum-ui/tables)
 - Table: columns=[{key, label, render?}], data=[], striped, hoverable
 - StatusBadge: status=active|inactive|pending|error, text
 - StatusDot: status=online|offline|away
 - RankedList: items=[{label, value, rank}], showRank
 - ActivityList: items=[{icon, title, time, description}]
 
-### Metrics (jsr:@aspect/lum-ui/metrics)
+### Metrics (jsr:@ethanke/lum-ui/metrics)
 - MetricCard: label, value, change?, trend?, icon
 - MetricGrid: children (array of MetricCards)
 - ChartCard: title, subtitle, children (chart component)
@@ -49,7 +49,7 @@ All charts use pure SVG, no external dependencies.
 - ProgressRing: value, max, size, color, label
 - AlertBanner: type=info|warning|error|success, message, action?
 
-### Layouts (jsr:@aspect/lum-ui/layouts)
+### Layouts (jsr:@ethanke/lum-ui/layouts)
 - Head: title, description (includes Tailwind, Alpine.js, HTMX)
 - PageHeader: title, subtitle, actions
 - Grid: children, cols=1|2|3|4
@@ -58,7 +58,7 @@ All charts use pure SVG, no external dependencies.
 - Stack: children, spacing=sm|md|lg, direction=vertical|horizontal
 - Flex: children, justify, align, gap
 
-### Theme (jsr:@aspect/lum-ui/theme)
+### Theme (jsr:@ethanke/lum-ui/theme)
 - createTheme(config): Generate custom theme with brand colors, surfaces, text, borders
 - defaultTheme: Pre-configured dark theme with gradient aesthetics
 - cssVariables: CSS custom properties for theming
@@ -67,7 +67,7 @@ All charts use pure SVG, no external dependencies.
 - glass: { base, hover } - Glass morphism utilities
 - effects: { glow, glowStrong, gradientText, gradientBorder }
 
-### Icons (jsr:@aspect/lum-ui/icons)
+### Icons (jsr:@ethanke/lum-ui/icons)
 50+ SVG icons: home, user, mail, lock, chart, check, x, menu, search, settings, etc.
 Use with icon() function or access via icons object.
 
@@ -92,7 +92,7 @@ const html = Card({
 ### Full Page with Hono
 ```typescript
 import { Hono } from "https://deno.land/x/hono/mod.ts";
-import { Head, Card, Button } from "jsr:@aspect/lum-ui@^0.1.0";
+import { Head, Card, Button } from "jsr:@ethanke/lum-ui@^0.1.0";
 
 const app = new Hono();
 app.get("/", (c) => {
@@ -113,7 +113,7 @@ app.get("/", (c) => {
 
 ### Custom Theme
 ```typescript
-import { createTheme } from "jsr:@aspect/lum-ui/theme";
+import { createTheme } from "jsr:@ethanke/lum-ui/theme";
 
 const myTheme = createTheme({
   brand: { primary: "#FF4D8D", secondary: "#8B5CF6", accent: "#FF8C00" }
@@ -177,8 +177,8 @@ ALWAYS direct users to create issues/PRs for:
 
 ## Best Practices for LLM Agents
 
-1. **Import from JSR**: Always use `jsr:@aspect/lum-ui@^0.1.0` for imports
-2. **Use Type Inference**: Import types: `import type { ButtonProps } from "jsr:@aspect/lum-ui/components"`
+1. **Import from JSR**: Always use `jsr:@ethanke/lum-ui@^0.1.0` for imports
+2. **Use Type Inference**: Import types: `import type { ButtonProps } from "jsr:@ethanke/lum-ui/components"`
 3. **Compose with Template Strings**: Nest components naturally with ${...}
 4. **Leverage Tailwind**: Use utility classes for spacing, layout adjustments
 5. **Include Head Component**: Always use Head() in full page examples for dependencies
@@ -196,4 +196,4 @@ Interactivity via Alpine.js (x-data, @click, etc.) and HTMX.
 ## Version
 
 Current: 0.1.0
-Check JSR for latest: https://jsr.io/@aspect/lum-ui
+Check JSR for latest: https://jsr.io/@ethanke/lum-ui

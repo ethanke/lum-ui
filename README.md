@@ -2,7 +2,7 @@
 
 > Modern, lightweight UI component library for Deno + HTMX + Alpine.js
 
-[![JSR](https://jsr.io/badges/@aspect/lum-ui)](https://jsr.io/@aspect/lum-ui)
+[![JSR](https://jsr.io/badges/@ethanke/lum-ui)](https://jsr.io/@ethanke/lum-ui)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Wiki](https://img.shields.io/badge/docs-wiki-blue)](https://github.com/ethanke/lum-ui/wiki)
 
@@ -33,19 +33,19 @@ Quick links:
 ### Installation
 
 ```bash
-deno add @aspect/lum-ui
+deno add @ethanke/lum-ui
 ```
 
 Or use directly:
 ```typescript
-import { Button, Card } from "jsr:@aspect/lum-ui@^0.1.0";
+import { Button, Card } from "jsr:@ethanke/lum-ui@^0.1.0";
 ```
 
 ### Basic Example
 
 ```typescript
 import { Hono } from "https://deno.land/x/hono/mod.ts";
-import { Head, Button, Card, StatCard } from "jsr:@aspect/lum-ui@^0.1.0";
+import { Head, Button, Card, StatCard } from "jsr:@ethanke/lum-ui@^0.1.0";
 
 const app = new Hono();
 

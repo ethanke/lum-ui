@@ -1,5 +1,5 @@
 {
-  "name": "@aspect/lum-ui",
+  "name": "@ethanke/lum-ui",
   "version": "0.1.0",
   "license": "MIT",
   "exports": {
@@ -23,6 +23,8 @@
     "exclude": [
       "examples/**",
       "tests/**",
+      "docs/**",
+      "scripts/**",
       "**/*.test.ts"
     ]
   },
@@ -46,6 +48,7 @@
     "check": "deno fmt --check && deno lint && deno check mod.ts",
     "test": "deno test --allow-read",
     "publish": "deno publish",
-    "gen:showcase": "deno run --allow-read --allow-write scripts/generate-showcase.ts ./showcase"
+    "gen:showcase": "deno run --allow-read --allow-write scripts/generate-showcase.ts ./showcase",
+    "gen:docs": "deno run --allow-read --allow-write scripts/generate-docs.ts ./docs"
   }
 }
