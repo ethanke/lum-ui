@@ -349,6 +349,9 @@ async function main() {
   const html = generateShowcase();
   await Deno.writeTextFile(`${OUTPUT_DIR}/index.html`, html);
   
+  // Create .nojekyll file for GitHub Pages
+  await Deno.writeTextFile(`${OUTPUT_DIR}/.nojekyll`, "");
+  
   console.log(`✅ Showcase generated at ${OUTPUT_DIR}/index.html`);
 }
 

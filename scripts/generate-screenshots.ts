@@ -2,10 +2,11 @@
 
 /**
  * Generates visual screenshots of all components using Puppeteer
- * Renders actual components from JSR package
+ * Renders actual components from local package
  */
 
 import puppeteer from "https://deno.land/x/puppeteer@16.2.0/mod.ts";
+import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 
 interface Component {
   name: string;
@@ -198,7 +199,7 @@ function generateHTML(component: Component): string {
 <body>
   <div id="root">Loading...</div>
   <script type="module">
-    import { ${allImports} } from "https://jsr.io/@aspect/lum-ui@0.1.0/mod.ts";
+    import { ${allImports} } from "/mod.ts";
     
     const html = ${component.code};
     document.getElementById('root').innerHTML = html;
@@ -207,7 +208,7 @@ function generateHTML(component: Component): string {
 </html>`;
 }
 
-async function captureScreenshot(component: Component): Promise<boolean> {
+async function captureScreenshot(component: Component, port: number): Promise<boolean> {
   try {
     console.log(`📸 Capturing: ${component.name}`);
 
@@ -237,15 +238,24 @@ async function captureScreenshot(component: Component): Promise<boolean> {
     const page = await browser.newPage();
     await page.setViewport({ width: 1200, height: 800 });
 
-    // Navigate to HTML file
-    const fileUrl = `file://${Deno.cwd()}/${htmlPath}`;
-    await page.goto(fileUrl, {
+    // Navigate to HTML file via local server
+    const url = `http://localhost:${port}/${htmlPath}`;
+    await page.goto(url, {
       waitUntil: "networkidle2",
-      timeout: 10000,
+      timeout: 30000,
     });
 
-    // Wait for content to render
-    await page.waitForTimeout(1000);
+    // Wait for content to actually render (not just "Loading...")
+    await page.waitForFunction(
+      () => {
+        const root = document.getElementById('root');
+        return root && root.innerHTML !== 'Loading...';
+      },
+      { timeout: 15000 }
+    );
+
+    // Give a bit more time for any animations or final rendering
+    await page.waitForTimeout(500);
 
     // Get element bounds and screenshot
     const element = await page.$("#root");
@@ -281,17 +291,59 @@ async function main() {
     // Directory already exists
   }
 
+  // Start a local HTTP server to serve files
+  const port = 8765;
+  const abortController = new AbortController();
+  
+  const serverPromise = serve(
+    async (req) => {
+      const url = new URL(req.url);
+      let filePath = url.pathname.slice(1); // Remove leading slash
+      
+      // Serve mod.ts and src files
+      if (!filePath || filePath === "/") {
+        filePath = "screenshots/index.html";
+      }
+      
+      try {
+        const content = await Deno.readTextFile(filePath);
+        const contentType = filePath.endsWith(".ts")
+          ? "application/javascript"
+          : filePath.endsWith(".html")
+          ? "text/html"
+          : "text/plain";
+        
+        return new Response(content, {
+          headers: {
+            "content-type": contentType,
+            "access-control-allow-origin": "*",
+          },
+        });
+      } catch {
+        return new Response("Not Found", { status: 404 });
+      }
+    },
+    { port, signal: abortController.signal, onListen: () => {} }
+  );
+
+  // Wait a moment for server to start
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
   let successCount = 0;
   let failCount = 0;
 
   for (const component of COMPONENTS) {
-    const success = await captureScreenshot(component);
+    const success = await captureScreenshot(component, port);
     if (success) {
       successCount++;
     } else {
       failCount++;
     }
   }
+
+  // Stop the server
+  abortController.abort();
+  await serverPromise.catch(() => {}); // Ignore abort error
 
   console.log(`\n✨ Screenshot generation complete!`);
   console.log(`📊 Success: ${successCount}, Failed: ${failCount}`);

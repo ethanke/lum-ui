@@ -1,4 +1,6 @@
 wiki/
+showcase/
+.specstory/
 node_modules/
 .DS_Store
 *.log

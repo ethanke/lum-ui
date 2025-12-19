@@ -47,6 +47,7 @@
     "test": "deno test --allow-read",
     "publish": "deno publish",
     "gen:wiki": "deno run --allow-read --allow-write scripts/generate-wiki.ts",
-    "init:wiki": "./scripts/init-wiki.sh"
+    "init:wiki": "./scripts/init-wiki.sh",
+    "gen:showcase": "deno run --allow-read --allow-write scripts/generate-showcase.ts ./showcase"
   }
 }
